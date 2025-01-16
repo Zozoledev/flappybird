@@ -32,15 +32,36 @@ int main()
 
 
 
-    //SPRITE PIPE
-    sf::Texture pipeTexture;
-    pipeTexture.loadFromFile("pipe.png");
-    sf::Sprite pipe;
-    pipe.setTexture(pipeTexture);
-    pipe.setPosition(sf::Vector2f(window.getSize().x / 2.f, -10.f));
-    pipe.setScale(2.f, window.getSize().y / pipeTexture.getSize().y * 1.5);
+    //SPRITE PIPE TOP
+    sf::Texture ToppipeTexture;
+    ToppipeTexture.loadFromFile("toppipe.png");
+    sf::Sprite toppipe;
+    toppipe.setTexture(ToppipeTexture);
+    toppipe.setPosition(sf::Vector2f(window.getSize().x / 2.f, -10.f));
+    toppipe.setScale(2.f, (window.getSize().y / ToppipeTexture.getSize().y )/2.f);
 
+    //FONTS 
+    auto gameoverbool = false;
+    sf::Font font;
+    font.loadFromFile("BPdotsUnicase.otf");
+    sf::Text gameover;
+    gameover.setFont(font);
+    gameover.setString("GAME OVER !");
+    gameover.setFillColor(sf::Color::White);
+    gameover.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    gameover.setPosition(sf::Vector2f(window.getSize().x / 3.f + 40, window.getSize().y / 3.f));
+    
 
+    //BUTTON PLYA AGAIN
+    auto buttonispress = false;
+    sf::Texture buttontexture;
+    buttontexture.loadFromFile("playagain.png");
+    sf::Sprite buttonplayagain;
+    buttonplayagain.setTexture(buttontexture);
+    buttonplayagain.setPosition(sf::Vector2f(window.getSize().x / 3.f + 40, window.getSize().y / 3.f + 40));
+    buttonplayagain.setScale(1.5, 1.5);
+
+     
  
     while (window.isOpen())
     {
@@ -65,7 +86,7 @@ int main()
         //SPRITE CALCUL
         sf::FloatRect spritebounds = sprite.getGlobalBounds();
         if(isjump){
-            if(!(spritebounds.top <= -30)){
+            if(!(spritebounds.top <= 0)){
                 if(cpttime < 30){
                     sprite.move(sf::Vector2f(0.f, -4.f));
                     cpttime++;
@@ -88,23 +109,48 @@ int main()
             }
                 
         }
-
         
+
+        //MOUSE POSITION 
+        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+        sf::Vector2f mouseWorldPosition = window.mapPixelToCoords(mousePosition);
+        sf::FloatRect buttonplayagainbounds = buttonplayagain.getGlobalBounds();
+        if(buttonplayagainbounds.contains(mouseWorldPosition)){
+            gameoverbool = false;
+        }
 
 
         //PIPE CALCUL
-        sf::FloatRect boundsPipe = pipe.getGlobalBounds();
+        sf::FloatRect boundsPipe = toppipe.getGlobalBounds();
         if(boundsPipe.left <= 0){
-            pipe.setPosition(sf::Vector2f(window.getSize().x / 2.f, -10.f));
+            toppipe.setPosition(sf::Vector2f(window.getSize().x / 2.f, -10.f));
         }
 
-        pipe.move(sf::Vector2f(-3.f, 0.f));
+        toppipe.move(sf::Vector2f(-3.f, 0.f));
 
 
-        window.clear(sf::Color::Black);
-        window.draw(background);
-        window.draw(sprite);
-        window.draw(pipe);
+        //GAME OVER 
+        if(spritebounds.intersects(boundsPipe)){
+            gameoverbool = true;
+        }
+
+
+
+
+        if(gameoverbool){
+            window.clear(sf::Color::Black);
+            window.draw(gameover);
+            window.draw(buttonplayagain);
+        }
+        
+        if(!gameoverbool){
+            window.clear(sf::Color::Black);
+            window.draw(background);
+            window.draw(sprite);
+            window.draw(toppipe);
+
+        }
+        
 
 
 
