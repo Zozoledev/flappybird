@@ -1,9 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+#include <random>
 
 int main()
 {
+    std::random_device rd; 
+    std::mt19937 gen(rd());
 
     //WINDOW
     sf::RenderWindow window(sf::VideoMode(1200, 600), "Flappy Bird");
@@ -27,7 +30,7 @@ int main()
     sf::Sprite sprite;
     sprite.setTexture(texture);
     sprite.setPosition(sf::Vector2f(50.f, 50.f));
-    sprite.setScale(0.5, 0.5);
+    sprite.setScale(0.8, 0.8);
     auto isjump = false;
     auto cpttime = 0;
 
@@ -38,16 +41,16 @@ int main()
     ToppipeTexture.loadFromFile("toppipe.png");
     sf::Sprite toppipe;
     toppipe.setTexture(ToppipeTexture);
-    toppipe.setPosition(sf::Vector2f(window.getSize().x, -10.f));
-    toppipe.setScale(2.f, (window.getSize().y / ToppipeTexture.getSize().y )/2.5);
+    toppipe.setPosition(sf::Vector2f(window.getSize().x, (window.getSize().y / - 3.f) ));
+    toppipe.setScale(2.f, 8.f);
 
     //SPRITE PIPE BOTTOM;
     sf::Texture BottompipeTexture;
     BottompipeTexture.loadFromFile("bottompipe.png");
     sf::Sprite bottompipe;
     bottompipe.setTexture(BottompipeTexture);
-    bottompipe.setPosition(sf::Vector2f(window.getSize().x, window.getSize().y / 1.45));
-    bottompipe.setScale(2.f, (window.getSize().y / ToppipeTexture.getSize().y )/2.5);
+    bottompipe.setPosition(sf::Vector2f(window.getSize().x, (window.getSize().y / 1.45)));
+    bottompipe.setScale(2.f, 8.f);
 
 
 
@@ -142,13 +145,24 @@ int main()
         //PIPE CALCUL
         sf::FloatRect boundsPipe = toppipe.getGlobalBounds();
         sf::FloatRect boundsbottom = bottompipe.getGlobalBounds();
+
+
+        
+
+
+
         if(boundsPipe.left <= 0 || boundsbottom.left <= 0){
-            toppipe.setPosition(sf::Vector2f(window.getSize().x, -10.f));
-            bottompipe.setPosition(sf::Vector2f(window.getSize().x, window.getSize().y / 1.45));
+            std::uniform_real_distribution<> moveDis(-150.0, 150.0);
+            auto movepipe = moveDis(gen);
+            toppipe.setPosition(sf::Vector2f(window.getSize().x, (window.getSize().y / - 3.f) + movepipe * 1.0));
+            bottompipe.setPosition(sf::Vector2f(window.getSize().x, window.getSize().y / 1.45 + movepipe * 1.0));
+
+            
+            
         }
 
-        toppipe.move(sf::Vector2f(-3.f, 0.f));
-        bottompipe.move(sf::Vector2f(-3.f, 0.f));
+        toppipe.move(sf::Vector2f(-6.f, 0.f));
+        bottompipe.move(sf::Vector2f(-6.f, 0.f));
 
 
         //GAME OVER 
