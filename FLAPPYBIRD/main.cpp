@@ -27,6 +27,7 @@ int main()
     sf::Sprite sprite;
     sprite.setTexture(texture);
     sprite.setPosition(sf::Vector2f(50.f, 50.f));
+    sprite.setScale(0.5, 0.5);
     auto isjump = false;
     auto cpttime = 0;
 
@@ -37,15 +38,17 @@ int main()
     ToppipeTexture.loadFromFile("toppipe.png");
     sf::Sprite toppipe;
     toppipe.setTexture(ToppipeTexture);
-    toppipe.setPosition(sf::Vector2f(window.getSize().x / 2.f, -10.f));
-    toppipe.setScale(2.f, (window.getSize().y / ToppipeTexture.getSize().y )/2.f);
+    toppipe.setPosition(sf::Vector2f(window.getSize().x, -10.f));
+    toppipe.setScale(2.f, (window.getSize().y / ToppipeTexture.getSize().y )/2.5);
 
     //SPRITE PIPE BOTTOM;
     sf::Texture BottompipeTexture;
     BottompipeTexture.loadFromFile("bottompipe.png");
     sf::Sprite bottompipe;
     bottompipe.setTexture(BottompipeTexture);
-    bottompipe.setPosition(sf::Vector2f(window.getSize().x / -2.f, 10.f));
+    bottompipe.setPosition(sf::Vector2f(window.getSize().x, window.getSize().y / 1.45));
+    bottompipe.setScale(2.f, (window.getSize().y / ToppipeTexture.getSize().y )/2.5);
+
 
 
 
@@ -101,8 +104,8 @@ int main()
         sf::FloatRect spritebounds = sprite.getGlobalBounds();
         if(isjump){
             if(!(spritebounds.top <= 0)){
-                if(cpttime < 30){
-                    sprite.move(sf::Vector2f(0.f, -7.f));
+                if(cpttime < 10){
+                    sprite.move(sf::Vector2f(0.f, -10.f));
                     cpttime++;
 
                 }else{
@@ -138,22 +141,25 @@ int main()
 
         //PIPE CALCUL
         sf::FloatRect boundsPipe = toppipe.getGlobalBounds();
-        if(boundsPipe.left <= 0){
-            toppipe.setPosition(sf::Vector2f(window.getSize().x / 2.f, -10.f));
+        sf::FloatRect boundsbottom = bottompipe.getGlobalBounds();
+        if(boundsPipe.left <= 0 || boundsbottom.left <= 0){
+            toppipe.setPosition(sf::Vector2f(window.getSize().x, -10.f));
+            bottompipe.setPosition(sf::Vector2f(window.getSize().x, window.getSize().y / 1.45));
         }
 
         toppipe.move(sf::Vector2f(-3.f, 0.f));
+        bottompipe.move(sf::Vector2f(-3.f, 0.f));
 
 
         //GAME OVER 
-        if(spritebounds.intersects(boundsPipe)){
+        if(spritebounds.intersects(boundsPipe) || spritebounds.intersects(boundsbottom)){
             gameoverbool = true;
         }
 
 
 
 
-        if(gameoverbool ){
+        if(gameoverbool){
             window.clear(sf::Color::Black);
             window.draw(gameover);
             window.draw(buttonplayagain);
