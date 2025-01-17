@@ -40,6 +40,15 @@ int main()
     toppipe.setPosition(sf::Vector2f(window.getSize().x / 2.f, -10.f));
     toppipe.setScale(2.f, (window.getSize().y / ToppipeTexture.getSize().y )/2.f);
 
+    //SPRITE PIPE BOTTOM;
+    sf::Texture BottompipeTexture;
+    BottompipeTexture.loadFromFile("bottompipe.png");
+    sf::Sprite bottompipe;
+    bottompipe.setTexture(BottompipeTexture);
+    bottompipe.setPosition(sf::Vector2f(window.getSize().x / -2.f, 10.f));
+
+
+
     //FONTS 
     auto gameoverbool = false;
     sf::Font font;
@@ -48,7 +57,7 @@ int main()
     gameover.setFont(font);
     gameover.setString("GAME OVER !");
     gameover.setFillColor(sf::Color::White);
-    gameover.setStyle(sf::Text::Bold | sf::Text::Underlined);
+    gameover.setStyle(sf::Text::Bold);
     gameover.setPosition(sf::Vector2f(window.getSize().x / 3.f + 40, window.getSize().y / 3.f));
     
 
@@ -72,14 +81,19 @@ int main()
                 window.close();
             }
 
-            else if (event.type == sf::Event::KeyPressed) {
+            if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Space) {
                     isjump = true;
                     
                 }
                     
                 }
+            }if(event.type == sf::Event::MouseButtonPressed){
+                buttonispress = true;
+
             }
+
+            
             
         
 
@@ -88,7 +102,7 @@ int main()
         if(isjump){
             if(!(spritebounds.top <= 0)){
                 if(cpttime < 30){
-                    sprite.move(sf::Vector2f(0.f, -4.f));
+                    sprite.move(sf::Vector2f(0.f, -7.f));
                     cpttime++;
 
                 }else{
@@ -115,9 +129,11 @@ int main()
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
         sf::Vector2f mouseWorldPosition = window.mapPixelToCoords(mousePosition);
         sf::FloatRect buttonplayagainbounds = buttonplayagain.getGlobalBounds();
-        if(buttonplayagainbounds.contains(mouseWorldPosition)){
+        if(buttonplayagainbounds.contains(mouseWorldPosition) && buttonispress){
             gameoverbool = false;
+            
         }
+        buttonispress = false;
 
 
         //PIPE CALCUL
@@ -137,7 +153,7 @@ int main()
 
 
 
-        if(gameoverbool){
+        if(gameoverbool ){
             window.clear(sf::Color::Black);
             window.draw(gameover);
             window.draw(buttonplayagain);
@@ -148,8 +164,10 @@ int main()
             window.draw(background);
             window.draw(sprite);
             window.draw(toppipe);
+            window.draw(bottompipe);
 
         }
+        
         
 
 
