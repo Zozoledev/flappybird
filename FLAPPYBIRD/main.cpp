@@ -22,6 +22,21 @@ int main()
     background.setTexture(backgroundTexture);
     background.setScale((window.getSize().x / backgroundTexture.getSize().x)*1.5, window.getSize().y / backgroundTexture.getSize().y);
 
+    //BAckground play
+    auto start = true;
+    sf::Texture playbackground;
+    playbackground.loadFromFile("arriereplanscene1.png");
+    sf::Sprite backgroundstart;
+    backgroundstart.setTexture(playbackground);
+    
+    //startbuuton
+
+    sf::Texture starttexture;
+    starttexture.loadFromFile("playbutton.png");
+    sf::Sprite buttonstart;
+    buttonstart.setTexture(starttexture);
+    buttonstart.setPosition(sf::Vector2f(window.getSize().x / 2.f - 115.f, window.getSize().y / 2.f - 100.f));
+    buttonstart.setScale(0.5, 0.5);
 
 
     //SPRITE FLAPPY
@@ -76,6 +91,8 @@ int main()
     buttonplayagain.setPosition(sf::Vector2f(window.getSize().x / 3.f + 40, window.getSize().y / 3.f + 40));
     buttonplayagain.setScale(1.5, 1.5);
 
+
+
      
  
     while (window.isOpen())
@@ -97,6 +114,11 @@ int main()
             }if(event.type == sf::Event::MouseButtonPressed){
                 buttonispress = true;
 
+            }
+            else{
+                buttonispress = false;
+
+                
             }
 
             
@@ -134,12 +156,22 @@ int main()
         //MOUSE POSITION 
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
         sf::Vector2f mouseWorldPosition = window.mapPixelToCoords(mousePosition);
+
         sf::FloatRect buttonplayagainbounds = buttonplayagain.getGlobalBounds();
+        sf::FloatRect buttonstartbounds = buttonstart.getGlobalBounds();
+
         if(buttonplayagainbounds.contains(mouseWorldPosition) && buttonispress){
             gameoverbool = false;
             
         }
-        buttonispress = false;
+       
+
+        if(buttonstartbounds.contains(mouseWorldPosition) && buttonispress){
+            
+            start = false;
+            
+        }
+        
 
 
         //PIPE CALCUL
@@ -172,14 +204,17 @@ int main()
 
 
 
+        if(start){
+            window.clear(sf::Color::Black);
+            window.draw(backgroundstart);
+            window.draw(buttonstart);
 
-        if(gameoverbool){
+        }
+        else if(gameoverbool){
             window.clear(sf::Color::Black);
             window.draw(gameover);
             window.draw(buttonplayagain);
-        }
-        
-        if(!gameoverbool){
+        }else{
             window.clear(sf::Color::Black);
             window.draw(background);
             window.draw(sprite);
